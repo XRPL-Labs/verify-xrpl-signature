@@ -1,6 +1,6 @@
 'use strict'
 
-const verifySignature = require('../')
+import {verifySignature} from '../'
 const fixtures = require(__dirname + '/fixtures.json')
 
 describe('ripple-binary-codec', () => {

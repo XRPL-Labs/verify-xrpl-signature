@@ -1,7 +1,12 @@
 import {decode, encodeForSigning} from 'ripple-binary-codec'
 import {verify, deriveAddress} from 'ripple-keypairs'
 
-const regularTx = (txBlob: string) => {
+export type verifySignatureResult = {
+  signedBy: string
+  signatureValid: boolean
+}
+
+export const verifySignature = (txBlob: string): verifySignatureResult => {
   let txn
   let signedBy = ''
   let signatureValid = false
@@ -33,5 +38,3 @@ const regularTx = (txBlob: string) => {
     signatureValid
   }
 }
-
-module.exports = regularTx
