@@ -1,7 +1,9 @@
 import {
   decode,
   encodeForSigning,
-  encodeForMultisigning
+  encodeForMultisigning,
+  Signer,
+  JsonTransaction
 } from 'ripple-binary-codec'
 
 import {
@@ -15,10 +17,13 @@ export type verifySignatureResult = {
   signatureMultiSign: boolean
 }
 
-export const verifySignature = (txBlob: string): verifySignatureResult => {
-  let txn
-  let signedBy = ''
-  let signatureValid = false
+export const verifySignature = (
+  txBlob: string,
+  explicitMultiSigner?: string
+): verifySignatureResult => {
+  let txn: JsonTransaction
+  let signedBy: string = ''
+  let signatureValid: boolean = false
 
   try {
     txn = decode(txBlob)
@@ -32,24 +37,38 @@ export const verifySignature = (txBlob: string): verifySignatureResult => {
     && typeof txn.SigningPubKey === 'string'
     && txn.SigningPubKey === ''
 
-  let signer = txn.SigningPubKey
-  if (signatureMultiSign && txn.Signers && txn.Signers.length > 0) {
-    signer = Object.values(txn.Signers)[0].Signer.SigningPubKey
-  }
-
   try {
-    signedBy = deriveAddress(signer)
+    if (signatureMultiSign && explicitMultiSigner && explicitMultiSigner.match(/^r/)) {
+      signedBy = explicitMultiSigner
+    } else if (signatureMultiSign && explicitMultiSigner) {
+      signedBy = deriveAddress(explicitMultiSigner)
+    } else {
+      let signer = txn.SigningPubKey
+      if (signatureMultiSign && txn.Signers && txn.Signers.length > 0) {
+        const firstSigner: any = Object.values(txn.Signers)[0]
+        signer = firstSigner.Signer.SigningPubKey
+      }
+      signedBy = deriveAddress(signer)
+    }
   } catch (e) {
     throw new Error(`Could not derive an XRPL account address from the transaction (Signing Public Key) (${e.message})`)
   }
 
   try {
     if (signatureMultiSign && txn.Signers) {
-      signatureValid = verify(
-        encodeForMultisigning(txn, signedBy),
-        Object.values(txn.Signers)[0].Signer.TxnSignature,
-        Object.values(txn.Signers)[0].Signer.SigningPubKey
-      )
+      const matchingSigners = Object.values(txn.Signers).filter((signer: Signer) => {
+        return deriveAddress(signer.Signer.SigningPubKey) === signedBy
+      })
+      if (matchingSigners.length > 0) {
+        const multiSigner = matchingSigners[0]
+        signatureValid = verify(
+          encodeForMultisigning(txn, signedBy),
+          multiSigner.Signer.TxnSignature,
+          multiSigner.Signer.SigningPubKey
+        )
+      } else {
+        throw new Error('Explicit MultiSigner not in Signers')
+      }
     } else {
       signatureValid = verify(
         encodeForSigning(txn),

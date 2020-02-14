@@ -20,6 +20,28 @@ describe('ripple-binary-codec', () => {
     })
   })
 
+  it('should verify multisigned with explicit account address', () => {
+    expect(verifySignature(fixtures.multisign.blob, fixtures.multisign.account)).toEqual({
+      signedBy: fixtures.multisign.account,
+      signatureValid: true,
+      signatureMultiSign: true
+    })
+  })
+
+  it('should verify multisigned with explicit hex pubkey', () => {
+    expect(verifySignature(fixtures.multisign.blob, fixtures.multisign.pubkey)).toEqual({
+      signedBy: fixtures.multisign.account,
+      signatureValid: true,
+      signatureMultiSign: true
+    })
+  })
+
+  it('should reject multisigned with missing explicit account address', () => {
+    expect(() => {
+      return verifySignature(fixtures.multisign.blob, fixtures.valid.account)
+    }).toThrowError(/Explicit MultiSigner not in Signers/)
+  })
+
   it('should not decode', () => {
     expect(() => {
       return verifySignature(fixtures.invalid.blob)
