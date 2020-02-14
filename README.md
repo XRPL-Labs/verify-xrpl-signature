@@ -1,8 +1,10 @@
 # Verify XRPL tx blob signatures
 
-Verify signed XRPL transactions (BLOB, hex).
+Verify signed XRPL transactions (BLOB, hex). Can be used to verify signed [XUMM](https://xumm.app) transactions.
 
-Can be used to verify signed [XUMM](https://xumm.app) transactions.
+### Note on MultiSigned transactions
+
+As this lib. is meant to verify XUMM generated signatures, only the **first** MultiSigner will be verified in case of a MultiSigned trasnaction, as XUMM will **never** allow signing on behalf of more than one signer.
 
 ## Use
 
