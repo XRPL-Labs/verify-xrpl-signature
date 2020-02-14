@@ -11,15 +11,16 @@ describe('ripple-binary-codec', () => {
     })
   })
 
-  it('should not verify', () => {
-    expect(() => {
-      return verifySignature(fixtures.invalid.blob1)
-    }).toThrowError(/Could not encode or verify/)
+  it('should verify multisigned', () => {
+    expect(verifySignature(fixtures.multisign.blob)).toEqual({
+      signedBy: fixtures.multisign.account,
+      signatureValid: true
+    })
   })
 
   it('should not decode', () => {
     expect(() => {
-      return verifySignature(fixtures.invalid.blob2)
+      return verifySignature(fixtures.invalid.blob)
     }).toThrowError(/Could not decode the transaction blob/)
   })
 })
