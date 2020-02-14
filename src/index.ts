@@ -12,6 +12,7 @@ import {
 export type verifySignatureResult = {
   signedBy: string
   signatureValid: boolean
+  signatureMultiSign: boolean
 }
 
 export const verifySignature = (txBlob: string): verifySignatureResult => {
@@ -25,14 +26,14 @@ export const verifySignature = (txBlob: string): verifySignatureResult => {
     throw new Error(`Could not decode the transaction blob (HEX) (${e.message})`)
   }
 
-  const isMultiSigned = typeof txn.Signers !== 'undefined'
+  const signatureMultiSign = typeof txn.Signers !== 'undefined'
     && Array.isArray(txn.Signers)
     && txn.Signers.length > 0
     && typeof txn.SigningPubKey === 'string'
     && txn.SigningPubKey === ''
 
   let signer = txn.SigningPubKey
-  if (isMultiSigned && txn.Signers && txn.Signers.length > 0) {
+  if (signatureMultiSign && txn.Signers && txn.Signers.length > 0) {
     signer = Object.values(txn.Signers)[0].Signer.SigningPubKey
   }
 
@@ -43,7 +44,7 @@ export const verifySignature = (txBlob: string): verifySignatureResult => {
   }
 
   try {
-    if (isMultiSigned && txn.Signers) {
+    if (signatureMultiSign && txn.Signers) {
       signatureValid = verify(
         encodeForMultisigning(txn, signedBy),
         Object.values(txn.Signers)[0].Signer.TxnSignature,
@@ -62,6 +63,7 @@ export const verifySignature = (txBlob: string): verifySignatureResult => {
 
   return {
     signedBy,
-    signatureValid
+    signatureValid,
+    signatureMultiSign
   }
 }

@@ -22,6 +22,7 @@ console.log(verifySignature(someTx))
 ```
 {
   signedBy: 'rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1',
-  signatureValid: true
+  signatureValid: true,
+  signatureMultiSign: false
 }
 ```
