@@ -11,7 +11,7 @@
     "watch": "tsc -w",
     "dev": "npm run build; nodemon dist/index.js",
     "pull": "git pull && npm run pm2 && pm2 monit",
-    "test": "jest --ci --verbose",
+    "test": "npm run clean && npm run build && npm run lint && jest --ci --verbose",
     "lint": "tslint -p ./"
   },
   "files": [
