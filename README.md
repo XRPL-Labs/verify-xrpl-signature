@@ -1,4 +1,4 @@
-# Verify XRPL tx blob signatures
+# Verify XRPL tx blob signatures [![npm version](https://badge.fury.io/js/verify-xrpl-signature.svg)](https://www.npmjs.com/verify-xrpl-signature)
 
 Verify signed XRPL transactions (BLOB, hex). Can be used to verify signed [XUMM](https://xumm.app) transactions.
 
