@@ -23,7 +23,7 @@
     "test": "test"
   },
   "dependencies": {
-    "ripple-binary-codec": "^1.2.0",
+    "ripple-binary-codec": "^1.4.2",
     "ripple-keypairs": "^1.1.0"
   },
   "devDependencies": {

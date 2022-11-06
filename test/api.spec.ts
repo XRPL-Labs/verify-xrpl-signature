@@ -20,6 +20,14 @@ describe('ripple-binary-codec', () => {
     })
   })
 
+  it('should verify multlisigned XLS20', () => {
+    expect(verifySignature(fixtures.xls20.blob)).toEqual({
+      signedBy: fixtures.xls20.account,
+      signatureValid: true,
+      signatureMultiSign: true
+    })
+  })
+
   it('should verify multisigned with explicit account address', () => {
     expect(verifySignature(fixtures.multisign.blob, fixtures.multisign.account)).toEqual({
       signedBy: fixtures.multisign.account,
