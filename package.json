@@ -5,14 +5,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm run clean && npm run lint && npm run build && npm run test",
+    "prepublish": "npm run clean && npm run build && npm run test",
     "clean": "rm -rf dist",
     "build": "tsc",
     "watch": "tsc -w",
     "dev": "npm run build; nodemon dist/index.js",
     "pull": "git pull && npm run pm2 && pm2 monit",
-    "test": "npm run clean && npm run build && npm run lint && jest --ci --verbose",
-    "lint": "tslint -p ./"
+    "test": "npm run clean && npm run build && jest --ci --verbose"
   },
   "files": [
     "dist/**/*.js",
@@ -22,18 +21,19 @@
   "directories": {
     "test": "test"
   },
+  "overrides": {
+    "ripple-binary-codec": "npm:xrpl-binary-codec-prerelease@2.0.0"
+  },
   "dependencies": {
-    "ripple-binary-codec": "^1.4.2",
-    "ripple-keypairs": "^1.1.0"
+    "ripple-keypairs": "^1.1.4",
+    "xrpl-accountlib": "^2.0.6"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "@types/node": "^12.12.14",
     "jest": "^27.3.1",
     "ts-jest": "^27.0.7",
-    "tslint": "^5.20.1",
-    "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.7.3"
+    "typescript": "4.5"
   },
   "repository": {
     "type": "git",

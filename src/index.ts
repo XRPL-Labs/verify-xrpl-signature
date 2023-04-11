@@ -2,9 +2,23 @@ import {
   decode,
   encodeForSigning,
   encodeForMultisigning,
-  Signer,
-  JsonTransaction
 } from 'ripple-binary-codec'
+
+export interface Signer {
+  Signer: {
+    SigningPubKey: string
+    TxnSignature: string
+    Account?: string
+  }
+}
+
+export interface JsonTransaction {
+  TxnSignature: string
+  SigningPubKey: string
+  Signers?: Signer[]
+}
+
+import { type XrplDefinitions } from 'xrpl-accountlib'
 
 import {
   verify,
@@ -19,16 +33,17 @@ export type verifySignatureResult = {
 
 export const verifySignature = (
   txBlob: string,
-  explicitMultiSigner?: string
+  explicitMultiSigner?: string,
+  definitions?: XrplDefinitions
 ): verifySignatureResult => {
   let txn: JsonTransaction
   let signedBy: string = ''
   let signatureValid: boolean = false
 
   try {
-    txn = decode(txBlob)
+    txn = decode(txBlob, definitions) as unknown as JsonTransaction
   } catch (e) {
-    throw new Error(`Could not decode the transaction blob (HEX) (${e.message})`)
+    throw new Error(`Could not decode the transaction blob (HEX) (${(e as Error).message})`)
   }
 
   const signatureMultiSign = typeof txn.Signers !== 'undefined'
@@ -51,7 +66,7 @@ export const verifySignature = (
       signedBy = deriveAddress(signer)
     }
   } catch (e) {
-    throw new Error(`Could not derive an XRPL account address from the transaction (Signing Public Key) (${e.message})`)
+    throw new Error(`Could not derive an XRPL account address from the transaction (Signing Public Key) (${(e as Error).message})`)
   }
 
   try {
@@ -62,7 +77,7 @@ export const verifySignature = (
       if (matchingSigners.length > 0) {
         const multiSigner = matchingSigners[0]
         signatureValid = verify(
-          encodeForMultisigning(txn, signedBy),
+          encodeForMultisigning(txn, signedBy, definitions),
           multiSigner.Signer.TxnSignature,
           multiSigner.Signer.SigningPubKey
         )
@@ -71,13 +86,13 @@ export const verifySignature = (
       }
     } else {
       signatureValid = verify(
-        encodeForSigning(txn),
+        encodeForSigning(txn, definitions),
         txn.TxnSignature,
         txn.SigningPubKey
       )
     }
   } catch (e) {
-    throw new Error(`Could not encode or verify the transaction (${e.message})`)
+    throw new Error(`Could not encode or verify the transaction (${(e as Error).message})`)
   }
 
   return {
