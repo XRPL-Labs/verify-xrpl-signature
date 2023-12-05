@@ -40,6 +40,14 @@ describe('ripple-binary-codec', () => {
     })
   })
 
+  it('should decode memo etc.', () => {
+    expect(verifySignature(fixtures.memoetc.blob)).toEqual({
+      signatureMultiSign: false,
+      signatureValid: true,
+      signedBy: "rakaFsHkNJ2dLk8RctSxmqNbRG7wigeoEF",
+    })
+  })
+
   it('should verify multisigned with explicit account address', () => {
     expect(verifySignature(fixtures.multisign.blob, fixtures.multisign.account)).toEqual({
       signedBy: fixtures.multisign.account,
