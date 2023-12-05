@@ -22,7 +22,7 @@
     "test": "test"
   },
   "overrides": {
-    "ripple-binary-codec": "npm:xrpl-binary-codec-prerelease@2.0.0"
+    "ripple-binary-codec": "npm:xrpl-binary-codec-prerelease@6.0.0"
   },
   "dependencies": {
     "ripple-keypairs": "^1.1.4",
