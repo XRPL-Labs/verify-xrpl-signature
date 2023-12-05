@@ -7,7 +7,7 @@ const definitions = require(__dirname + '/definitions.json')
 import {XrplDefinitions} from 'xrpl-accountlib'
 const CustomDefinitions = new XrplDefinitions(definitions)
 
-describe('ripple-binary-codec', () => {
+describe('xrpl-binary-codec-prerelease (ripple-binary-codec)', () => {
   it('should verify', () => {
     expect(verifySignature(fixtures.valid.blob)).toEqual({
       signedBy: fixtures.valid.account,

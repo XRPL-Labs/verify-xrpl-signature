@@ -1,6 +1,6 @@
 {
   "name": "verify-xrpl-signature",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Verify XRPL signed TX blob",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,12 +21,10 @@
   "directories": {
     "test": "test"
   },
-  "overrides": {
-    "ripple-binary-codec": "npm:xrpl-binary-codec-prerelease@6.0.0"
-  },
   "dependencies": {
     "ripple-keypairs": "^1.1.4",
-    "xrpl-accountlib": "^3.1.0"
+    "xrpl-accountlib": "^3.2.0",
+    "xrpl-binary-codec-prerelease": "^7.0.1"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",

@@ -2,7 +2,7 @@ import {
   decode,
   encodeForSigning,
   encodeForMultisigning,
-} from 'ripple-binary-codec'
+} from 'xrpl-binary-codec-prerelease'
 
 export interface Signer {
   Signer: {
