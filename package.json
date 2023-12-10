@@ -1,6 +1,6 @@
 {
   "name": "verify-xrpl-signature",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Verify XRPL signed TX blob",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,6 +22,8 @@
     "test": "test"
   },
   "dependencies": {
+    "axios": "^1.6.2",
+    "node-fetch": "^2.7.0",
     "ripple-keypairs": "^1.1.4",
     "xrpl-accountlib": "^3.2.0",
     "xrpl-binary-codec-prerelease": "^7.0.1"
@@ -29,6 +31,7 @@
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "@types/node": "^12.12.14",
+    "@types/node-fetch": "^2.6.9",
     "jest": "^27.3.1",
     "ts-jest": "^27.0.7",
     "typescript": "4.5"

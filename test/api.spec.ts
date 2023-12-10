@@ -1,78 +1,117 @@
-'use strict'
+"use strict";
 
-import {verifySignature} from '../'
-const fixtures = require(__dirname + '/fixtures.json')
+import { verifySignature, getDefinitions } from "../";
+const fixtures = require(__dirname + "/fixtures.json");
 
-const definitions = require(__dirname + '/definitions.json')
-import {XrplDefinitions} from 'xrpl-accountlib'
-const CustomDefinitions = new XrplDefinitions(definitions)
+const definitions = require(__dirname + "/definitions.json");
+import { XrplDefinitions } from "xrpl-accountlib";
+const CustomDefinitions = new XrplDefinitions(definitions);
 
-describe('xrpl-binary-codec-prerelease (ripple-binary-codec)', () => {
-  it('should verify', () => {
+describe("xrpl-verify-signature", () => {
+  it("should verify", () => {
     expect(verifySignature(fixtures.valid.blob)).toEqual({
       signedBy: fixtures.valid.account,
       signatureValid: true,
-      signatureMultiSign: false
-    })
-  })
+      signatureMultiSign: false,
+    });
+  });
 
-  it('should verify hook', () => {
-    expect(verifySignature(fixtures.validhook.blob, undefined, CustomDefinitions)).toEqual({
+  it("should verify hook", () => {
+    expect(
+      verifySignature(fixtures.validhook.blob, undefined, CustomDefinitions)
+    ).toEqual({
       signedBy: fixtures.validhook.account,
       signatureValid: true,
-      signatureMultiSign: false
-    })
-  })
+      signatureMultiSign: false,
+    });
+  });
 
-  it('should verify multisigned', () => {
+  it("should verify multisigned", () => {
     expect(verifySignature(fixtures.multisign.blob)).toEqual({
       signedBy: fixtures.multisign.account,
       signatureValid: true,
-      signatureMultiSign: true
-    })
-  })
+      signatureMultiSign: true,
+    });
+  });
 
-  it('should verify multlisigned XLS20', () => {
+  it("should verify multlisigned XLS20", () => {
     expect(verifySignature(fixtures.xls20.blob)).toEqual({
       signedBy: fixtures.xls20.account,
       signatureValid: true,
-      signatureMultiSign: true
-    })
-  })
+      signatureMultiSign: true,
+    });
+  });
 
-  it('should decode memo etc.', () => {
+  it("should decode memo etc.", () => {
     expect(verifySignature(fixtures.memoetc.blob)).toEqual({
       signatureMultiSign: false,
       signatureValid: true,
       signedBy: "rakaFsHkNJ2dLk8RctSxmqNbRG7wigeoEF",
-    })
-  })
+    });
+  });
 
-  it('should verify multisigned with explicit account address', () => {
-    expect(verifySignature(fixtures.multisign.blob, fixtures.multisign.account)).toEqual({
+  it("should verify multisigned with explicit account address", () => {
+    expect(
+      verifySignature(fixtures.multisign.blob, fixtures.multisign.account)
+    ).toEqual({
       signedBy: fixtures.multisign.account,
       signatureValid: true,
-      signatureMultiSign: true
-    })
-  })
+      signatureMultiSign: true,
+    });
+  });
 
-  it('should verify multisigned with explicit hex pubkey', () => {
-    expect(verifySignature(fixtures.multisign.blob, fixtures.multisign.pubkey)).toEqual({
+  it("should verify multisigned with explicit hex pubkey", () => {
+    expect(
+      verifySignature(fixtures.multisign.blob, fixtures.multisign.pubkey)
+    ).toEqual({
       signedBy: fixtures.multisign.account,
       signatureValid: true,
-      signatureMultiSign: true
-    })
-  })
+      signatureMultiSign: true,
+    });
+  });
 
-  it('should reject multisigned with missing explicit account address', () => {
+  it("should reject multisigned with missing explicit account address", () => {
     expect(() => {
-      return verifySignature(fixtures.multisign.blob, fixtures.valid.account)
-    }).toThrowError(/Explicit MultiSigner not in Signers/)
-  })
+      return verifySignature(fixtures.multisign.blob, fixtures.valid.account);
+    }).toThrowError(/Explicit MultiSigner not in Signers/);
+  });
 
-  it('should not decode', () => {
+  it("should not decode", () => {
     expect(() => {
-      return verifySignature(fixtures.invalid.blob)
-    }).toThrowError(/Could not decode the transaction blob/)
-  })
-})
+      return verifySignature(fixtures.invalid.blob);
+    }).toThrowError(/Could not decode the transaction blob/);
+  });
+
+  it("get definitions based on network id", () => {
+    expect(
+      (async () => {
+        return await getDefinitions(21338);
+      })()
+    ).resolves.toBeInstanceOf(XrplDefinitions);
+  });
+
+  it("get definitions based on network code", () => {
+    expect(
+      (async () => {
+        return await getDefinitions("XAHAU");
+      })()
+    ).resolves.toBeInstanceOf(XrplDefinitions);
+  });
+
+  it("default Import tx failure", () => {
+    expect(() => {
+      verifySignature(fixtures.xahau.importtx.blob);
+    }).toThrowError("Could not decode the transaction blob");
+  });
+
+  it("dynamic defs Import tx success", async () => {
+    const defs = await getDefinitions("XAHAU");
+    expect(
+      verifySignature(fixtures.xahau.importtx.blob, undefined, defs)
+    ).toEqual({
+      signedBy: fixtures.xahau.importtx.account,
+      signatureValid: true,
+      signatureMultiSign: false,
+    });
+  });
+});
