@@ -36,14 +36,11 @@ The output must be an already parsed object. It must use GET method
 if no body is given, and POST method if the second argument is the body to post in JSON stringified format.
 
 ```javascript
-const verifySignature = require('verify-xrpl-signature').verifySignature
-const {XrplDefinitions} = require('xrpl-accountlib')
+const verifyXrplSignature = require('verify-xrpl-signature')
+const { verifySignature, getDefinitions } = verifyXrplSignature 
 const fetch = require('node-fetch')
 
-const request = (url, body) => {
-  return fetch(url, { method: body ? "POST" : "GET", body }).then(r => r.json());
-};
-
+const request = (url, body) => fetch(url, { method: body ? "POST" : "GET", body }).then(r => r.json())
 
 ;(async () => {
   const definitions = await getDefinitions("XAHAU", request) // Network = XAHHAU (id: 21337 would work too), pass `request` method.
@@ -63,16 +60,14 @@ The above example including network definitions in `.mjs` could look like this:
 
 ```javascript
 import verifyXrplSignature from 'verify-xrpl-signature'
-const { verifySignature } = verifyXrplSignature 
-import { XrplDefinitions } from 'xrpl-accountlib'
+const { verifySignature, getDefinitions } = verifyXrplSignature 
 import fetch from 'node-fetch'
 
-const definitionsCall = await fetch('https://xahau.network', { method: 'POST', body: '{"method":"server_definitions"}' })
-const definitions = new XrplDefinitions((await definitionsCall.json()).result)
+const request = (url, body) => fetch(url, { method: body ? "POST" : "GET", body }).then(r => r.json())
 
 const someTx = '<<binhex>>'
 
-console.log(verifySignature(someTx, undefined, definitions))
+console.log(verifySignature(someTx, undefined, await getDefinitions("XAHAU", request)))
 
 // In case of explicit MultiSign signer verification:
 // console.log(verifySignature(someTx, 'rwiETSee2wMz3SBnAG8hkMsCgvGy9LWbZ1', definitions))
