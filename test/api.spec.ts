@@ -8,8 +8,8 @@ import { XrplDefinitions } from "xrpl-accountlib";
 import fetch from "node-fetch";
 const CustomDefinitions = new XrplDefinitions(definitions);
 
-const request = (url: string, body?: string) => {
-  return fetch(url, { method: body ? "POST" : "GET", body }).then((r) =>
+const request = (url: string, body?: string): any => {
+  return fetch(url, { method: body ? "POST" : "GET", body }).then((r: any) =>
     r.json()
   );
 };

@@ -11,7 +11,7 @@
     "watch": "tsc -w",
     "dev": "npm run build; nodemon dist/index.js",
     "pull": "git pull && npm run pm2 && pm2 monit",
-    "test": "npm run clean && npm run build && jest --ci --verbose"
+    "test": "npm run clean && npm install node-fetch@2 @types/node-fetch && npm run build && jest --ci --verbose && npm rm node-fetch@2 @types/node-fetch"
   },
   "files": [
     "dist/**/*.js",
@@ -29,7 +29,6 @@
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "@types/node": "^12.12.14",
-    "@types/node-fetch": "^2.6.9",
     "jest": "^27.3.1",
     "node-fetch": "^2.7.0",
     "ts-jest": "^27.0.7",
