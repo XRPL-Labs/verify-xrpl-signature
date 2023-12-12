@@ -21,7 +21,6 @@ export interface JsonTransaction {
 
 import { XrplDefinitions } from "xrpl-accountlib";
 import { verify, deriveAddress } from "ripple-keypairs";
-import fetch from "node-fetch";
 
 export type verifySignatureResult = {
   signedBy: string;
@@ -30,12 +29,12 @@ export type verifySignatureResult = {
 };
 
 export const getDefinitions = async (
-  network: number | string
+  network: number | string,
+  request: (url: string, body?: string) => Promise<any>
 ): Promise<XrplDefinitions | undefined> => {
   try {
     // Dynamic definitions
-    const call = await fetch("https://xumm.app/api/v1/platform/rails");
-    const rails = await call.json();
+    const rails = await request("https://xumm.app/api/v1/platform/rails");
 
     const networkData =
       typeof rails === "object" && rails
@@ -47,11 +46,10 @@ export const getDefinitions = async (
         : Error("Invalid rail data from XRPL Labs endpoint");
 
     if (networkData?.rpc) {
-      const defsCall = await fetch(networkData.rpc, {
-        method: "POST",
-        body: '{"method":"server_definitions"}',
-      });
-      const defsJson = await defsCall.json();
+      const defsJson = await request(
+        networkData.rpc,
+        '{"method":"server_definitions"}'
+      );
       if (typeof defsJson === "object" && defsJson) {
         if (defsJson?.result?.FIELDS) {
           return new XrplDefinitions(defsJson.result);

@@ -26,27 +26,27 @@ using network definitions of `Xahau`.
 
 ### Alternative network definitions
 
-##### Auto-definition fetching
+This lib. offers a helper to fetch network definitions dynamically. The example below (`.js`) shows how to
+verify the signature of a transaction using dynamically fetched network definitions of `Xahau`:
 
-Note! When a known NetworkID is detected in the transaction, network definitions will be automatically fetched from a public RPC
-endpoint. Known NetworkIDs used to fetch definitions:
+Please note the `getDefinitions` method requires the second argument to be a custom method to map to your own
+preferred lib. to obtain external JSON data.
 
-- 21337 (Xahau Mainnet)
-- 21338 (Xahau Testnet)
-
-##### Manual definition fetching
-
-The example below (`.js`) shows how to verify the signature of a transaction using dynamically fetched network definitions of `Xahau`:
+The output must be an already parsed object. It must use GET method
+if no body is given, and POST method if the second argument is the body to post in JSON stringified format.
 
 ```javascript
 const verifySignature = require('verify-xrpl-signature').verifySignature
 const {XrplDefinitions} = require('xrpl-accountlib')
 const fetch = require('node-fetch')
 
+const request = (url, body) => {
+  return fetch(url, { method: body ? "POST" : "GET", body }).then(r => r.json());
+};
+
+
 ;(async () => {
-  const definitionsCall = await fetch('https://xahau.network', { method: 'POST', body: '{"method":"server_definitions"}' })
-  const definitionsJson = await definitionsCall.json()
-  const definitions = new XrplDefinitions(definitionsJson.result)
+  const definitions = await getDefinitions("XAHAU", request) // Network = XAHHAU (id: 21337 would work too), pass `request` method.
 
   const someTx = '2280000000240000000268400000000000000C73210333C718C9CB716E0575454F4A343D46B284ED51151B9C7383524B82C10B262095744730450221009A4D99017F8FD6881D888047E2F9F90C068C09EC9308BC8526116B539D6DD44102207FAA7E8756F67FE7EE1A88884F120A00A8EC37E7D3E5ED3E02FEA7B1D97AA05581146C0994D3FCB140CAB36BAE9465137448883FA487'
 

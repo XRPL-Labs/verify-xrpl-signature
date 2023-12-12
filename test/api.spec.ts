@@ -5,7 +5,14 @@ const fixtures = require(__dirname + "/fixtures.json");
 
 const definitions = require(__dirname + "/definitions.json");
 import { XrplDefinitions } from "xrpl-accountlib";
+import fetch from "node-fetch";
 const CustomDefinitions = new XrplDefinitions(definitions);
+
+const request = (url: string, body?: string) => {
+  return fetch(url, { method: body ? "POST" : "GET", body }).then((r) =>
+    r.json()
+  );
+};
 
 describe("xrpl-verify-signature", () => {
   it("should verify", () => {
@@ -85,7 +92,7 @@ describe("xrpl-verify-signature", () => {
   it("get definitions based on network id", () => {
     expect(
       (async () => {
-        return await getDefinitions(21338);
+        return await getDefinitions(21338, request);
       })()
     ).resolves.toBeInstanceOf(XrplDefinitions);
   });
@@ -93,7 +100,7 @@ describe("xrpl-verify-signature", () => {
   it("get definitions based on network code", () => {
     expect(
       (async () => {
-        return await getDefinitions("XAHAU");
+        return await getDefinitions("XAHAU", request);
       })()
     ).resolves.toBeInstanceOf(XrplDefinitions);
   });
@@ -105,7 +112,7 @@ describe("xrpl-verify-signature", () => {
   });
 
   it("dynamic defs Import tx success", async () => {
-    const defs = await getDefinitions("XAHAU");
+    const defs = await getDefinitions("XAHAU", request);
     expect(
       verifySignature(fixtures.xahau.importtx.blob, undefined, defs)
     ).toEqual({
