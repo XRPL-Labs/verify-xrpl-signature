@@ -19,7 +19,7 @@ export interface JsonTransaction {
   NetworkID?: number;
 }
 
-import { XrplDefinitions } from "xrpl-accountlib";
+import { XrplDefinitions } from "xrpl-binary-codec-prerelease";
 import { verify, deriveAddress } from "ripple-keypairs";
 
 export type verifySignatureResult = {

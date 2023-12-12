@@ -11,7 +11,7 @@
     "watch": "tsc -w",
     "dev": "npm run build; nodemon dist/index.js",
     "pull": "git pull && npm run pm2 && pm2 monit",
-    "test": "npm run clean && npm install node-fetch@2 @types/node-fetch && npm run build && jest --ci --verbose && npm rm node-fetch@2 @types/node-fetch"
+    "test": "npm run clean && npm install node-fetch@2 @types/node-fetch xrpl-accountlib && npm run build && jest --ci --verbose && npm rm node-fetch@2 @types/node-fetch xrpl-accountlib"
   },
   "files": [
     "dist/**/*.js",
@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "ripple-keypairs": "^1.1.4",
-    "xrpl-accountlib": "^3.2.0",
     "xrpl-binary-codec-prerelease": "^7.0.1"
   },
   "devDependencies": {
