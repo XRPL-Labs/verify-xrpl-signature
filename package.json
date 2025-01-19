@@ -1,6 +1,6 @@
 {
   "name": "verify-xrpl-signature",
-  "version": "8.1.0",
+  "version": "8.1.1",
   "description": "Verify XRPL signed TX blob",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
